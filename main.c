@@ -51,7 +51,7 @@ void dummy_task1 (void * args)
 {
     static uint8_t counter;
     TickType_t xLastWakeTime;
-    const TickType_t xPeriod = pdMS_TO_TICKS(4000);
+    const TickType_t xPeriod = pdMS_TO_TICKS(2000);
     xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
@@ -64,7 +64,7 @@ void dummy_task2 (void * args)
 {
     static uint8_t counter;
     TickType_t xLastWakeTime;
-    const TickType_t xPeriod = pdMS_TO_TICKS(4000);
+    const TickType_t xPeriod = pdMS_TO_TICKS(1000);
     xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
