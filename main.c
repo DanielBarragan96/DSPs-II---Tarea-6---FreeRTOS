@@ -32,7 +32,6 @@
  * @file    Tarea 6.c
  * @brief   Application entry point.
  */
-#include <freertos/source/tasks.c>
 #include <stdio.h>
 #include "board.h"
 #include "peripherals.h"
@@ -42,46 +41,49 @@
 #include "fsl_debug_console.h"
 #include "rtos_config.h"
 #include "rtos.h"
+
+#include "FreeRTOS.h"
 #include "task.h"
+
 /* TODO: insert other include files here. */
 
-void dummy_task1 (void)
+void dummy_task1 (void * args)
 {
     static uint8_t counter;
-    static rtos_tick_t retardo;
+    TickType_t xLastWakeTime;
+    const TickType_t xPeriod = pdMS_TO_TICKS(4000);
+    xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
-        retardo = rtos_get_clock ();
         PRINTF ("IN TASK 1: %i +++++++++++++++\r\n", counter);
         counter++;
-        retardo -= rtos_get_clock ();
-        vTaskDelay (2000 - retardo);
+        vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
-void dummy_task2 (void)
+void dummy_task2 (void * args)
 {
     static uint8_t counter;
-    static rtos_tick_t retardo;
+    TickType_t xLastWakeTime;
+    const TickType_t xPeriod = pdMS_TO_TICKS(4000);
+    xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
-        retardo = rtos_get_clock ();
         PRINTF ("IN TASK 2: %i +++++++++++++++\r\n", counter);
         counter++;
-        retardo -= rtos_get_clock ();
-        vTaskDelay (1000 - retardo);
+        vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
-void dummy_task3 (void)
+void dummy_task3 (void * args)
 {
     static uint8_t counter;
-    static rtos_tick_t retardo;
+    TickType_t xLastWakeTime;
+    const TickType_t xPeriod = pdMS_TO_TICKS(4000);
+    xLastWakeTime = xTaskGetTickCount();
     for (;;)
     {
-        retardo = rtos_get_clock ();
         PRINTF ("IN TASK 3: %i +++++++++++++++\r\n", counter);
         counter++;
-        retardo -= rtos_get_clock ();
-        vTaskDelay (4000 - retardo);
+        vTaskDelayUntil(&xLastWakeTime, xPeriod);
     }
 }
 
@@ -102,7 +104,7 @@ int main(void) {
 
     TaskFunction_t pxTaskCode = (void *) &dummy_task1;//function direction
     const char * const pcName[20];//identifier name
-    const uint16_t usStackDepth = 100*4;//stack size
+    const uint16_t usStackDepth = 110;//stack size
     void * pvParameters = 0;//values to the task
     UBaseType_t uxPriority;//task priority
     TaskHandle_t * const pxCreatedTask = NULL;//handle task, not used
@@ -110,9 +112,9 @@ int main(void) {
     TaskFunction_t pxTaskCode2 = (void *) &dummy_task2;//function direction
     TaskFunction_t pxTaskCode3 = (void *) &dummy_task3;//function direction
 
-    xTaskCreate(pxTaskCode, "Dummy One", usStackDepth, &pvParameters, 1, pxCreatedTask);
-    xTaskCreate(pxTaskCode2, "Dummy Two", usStackDepth, &pvParameters, 1, pxCreatedTask);
-    xTaskCreate(pxTaskCode3, "Dummy Three", usStackDepth, &pvParameters, 1, pxCreatedTask);
+    xTaskCreate(dummy_task1, "Dummy One", 110, NULL, 1, NULL);
+    xTaskCreate(dummy_task2, "Dummy Two", 110, NULL, 2, NULL);
+    xTaskCreate(dummy_task3, "Dummy Three", 110, NULL, 1, NULL);
     vTaskStartScheduler();
 
 //    rtos_create_task (dummy_task1, 1, kAutoStart);
